@@ -228,6 +228,7 @@ public class SubjectsController {
   }
   
   public List<Integer> deleteSubject(Project project, String subject) throws SchemaException, KafkaException {
+    validateSubject(subject, false);
     if (!projectTopicsFacade.findTopicsBySubject(project, subject).isEmpty()) {
       throw new KafkaException(RESTCodes.KafkaErrorCode.SCHEMA_IN_USE, Level.FINE, "project=" + project.getName() +
         ", subject=" + subject);
@@ -279,6 +280,7 @@ public class SubjectsController {
   
   public Integer deleteSubjectsVersion(Project project, String subject, String version)
     throws SchemaException, KafkaException {
+    validateSubject(subject, false);
     validateVersion(version);
     if (!subjectsFacade.getListOfSubjects(project).contains(subject)) {
       throw new SchemaException(RESTCodes.SchemaRegistryErrorCode.SUBJECT_NOT_FOUND, Level.FINE, "subject=" +

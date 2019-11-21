@@ -334,7 +334,6 @@ public class KafkaResource {
     return Response.ok(uri).entity(aclDto).build();
   }
 
-  /********************************************************************************************************************/
   @ApiOperation(value = "Get schema by its id.")
   @GET
   @Path("/schemas/ids/{id}")

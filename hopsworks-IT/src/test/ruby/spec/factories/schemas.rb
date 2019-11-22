@@ -13,34 +13,8 @@
  You should have received a copy of the GNU Affero General Public License along with this program.
  If not, see <https://www.gnu.org/licenses/>.
 =end
-
-require 'json'
-
-describe "On #{ENV['OS']}" do
-  describe 'schemas' do
-    context 'with valid project, test subject' do
-      before :all do
-        with_valid_project
-        with_test_subject
-      end
-
-      after :all do
-        clean_projects
-      end
-
-      describe 'basic operations on subjects' do
-        it 'adds a new subject' do
-          project = get_project
-          register_new_schema(project, "test", "[]")
-          expect_status(200)
-	end
-        
-        it 'returns schema by its id' do
-          get_schema_by_id(@project, @schemas[:id])
-          expect_status(200)
-          expect("[]").to eq(json_body[:schema])
-        end
-      end
-    end
+class Schemas < ActiveRecord::Base
+  def self.table_name
+    "schemas"
   end
 end

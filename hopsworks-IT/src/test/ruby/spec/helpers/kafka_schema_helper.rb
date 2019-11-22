@@ -15,59 +15,65 @@
 =end
 module SchemaHelper
 
-  def get_schema_by_id(project_id, schema_id)
-    get "#{ENV['HOPSWORKS_API']}/project/#{project_id}/kafka/schemas/ids/#{schema_id}"
+  def get_schema_by_id(project, schema_id)
+    get "#{ENV['HOPSWORKS_API']}/project/#{project.id.to_s}/kafka/schemas/ids/#{schema_id.to_s}"
   end
 
-  def get_subjects(project_id)
-    get "#{ENV['HOPSWORKS_API']}/project/#{project_id}/kafka/subjects"
+  def with_test_subject
+    register_new_schema(@project, "subject_test", "[]")
+    expect_status(200)
+    @schemas ||= get_subject_details(@project, "subject_test", 1)
   end
 
-  def get_subject_versions(project_id, subject)
-    get "#{ENV['HOPSWORKS_API']}/project/#{project_id}/kafka/subjects/#{subject}/versions"
+  def get_subjects(project)
+    get "#{ENV['HOPSWORKS_API']}/project/#{project.id.to_s}/kafka/subjects"
   end
 
-  def delete_subject(project_id, subject)
-    delete "#{ENV['HOPSWORKS_API']}/project/#{project_id}/kafka/subjects/#{subject}"
+  def get_subject_versions(project, subject)
+    get "#{ENV['HOPSWORKS_API']}/project/#{project.id.to_s}/kafka/subjects/#{subject}/versions"
   end
 
-  def get_subject_details(project_id, subject, version)
-    get "#{ENV['HOPSWORKS_API']}/project/#{project_id}/kafka/subjects/#{subject}/versions/#{version}"
+  def delete_subject(project, subject)
+    delete "#{ENV['HOPSWORKS_API']}/project/#{project.id.to_s}/kafka/subjects/#{subject}"
   end
 
-  def get_subject_schema(project_id, subject, version)
-    get "#{ENV['HOPSWORKS_API']}/project/#{project_id}/kafka/subjects/#{subject}/versions/#{version}/schema"
+  def get_subject_details(project, subject, version)
+    get "#{ENV['HOPSWORKS_API']}/project/#{project.id.to_s}/kafka/subjects/#{subject}/versions/#{version.to_s}"
   end
 
-  def register_new_schema(project_id, subject, schema_content)
-    post "#{ENV['HOPSWORKS_API']}/project/#{project_id}/kafka/subjects/#{subject}/versions", {schema: "#{schema_content}"
+  def get_subject_schema(project, subject, version)
+    get "#{ENV['HOPSWORKS_API']}/project/#{project.id.to_s}/kafka/subjects/#{subject}/versions/#{version.to_s}/schema"
   end
 
-  def check_if_schema_registered(project_id, subject, schema_content)
-    post "#{ENV['HOPSWORKS_API']}/project/#{project_id}/kafka/subjects/#{subject}", {schema: "#{schema_content}"
+  def register_new_schema(project, subject, schema_content)
+    post "#{ENV['HOPSWORKS_API']}/project/#{project.id.to_s}/kafka/subjects/#{subject}/versions", {schema: "#{schema_content}"}
   end
 
-  def delete_subjects_version(project_id, subject, version)
-    delete "#{ENV['HOPSWORKS_API']}/project/#{project_id}/kafka/subjects/#{subject}/versions/#{version}"
+  def check_if_schema_registered(project, subject, schema_content)
+    post "#{ENV['HOPSWORKS_API']}/project/#{project.id.to_s}/kafka/subjects/#{subject}", {schema: "#{schema_content}"}
   end
 
-  def check_compatibility(project_id, subject, version, schema_content)
-    post "#{ENV['HOPSWORKS_API']}/project/#{project_id}/compatibility/subjects/#{subject}/versions/#{version}"
+  def delete_subjects_version(project, subject, version)
+    delete "#{ENV['HOPSWORKS_API']}/project/#{project.id.to_s}/kafka/subjects/#{subject}/versions/#{version.to_s}"
   end
 
-  def update_project_config(project_id, new_compatibility)
-    put "#{ENV['HOPSWORKS_API']}/project/#{project_id}/kafka/config", {compatibility:"#{new_compatibility}"}
+  def check_compatibility(project, subject, version, schema_content)
+    post "#{ENV['HOPSWORKS_API']}/project/#{project.id.to_s}/compatibility/subjects/#{subject}/versions/#{version.to_s}"
   end
 
-  def get_project_config(project_id)
-    get "#{ENV['HOPSWORKS_API']}/project/#{project_id}/kafka/config"
+  def update_project_config(project, new_compatibility)
+    put "#{ENV['HOPSWORKS_API']}/project/#{project.id.to_s}/kafka/config", {compatibility:"#{new_compatibility}"}
   end
 
-  def update_subject_config(project_id, subject, new_compatibility)
-    put "#{ENV['HOPSWORKS_API']}/project/#{project_id}/kafka/config/#{subject}", {compatibility:"#{new_compatibility}"}
+  def get_project_config(project)
+    get "#{ENV['HOPSWORKS_API']}/project/#{project.id.to_s}/kafka/config"
   end
 
-  def get_subject_config(project_id, subject)
-    get "#{ENV['HOPSWORKS_API']}/project/#{project_id}/kafka/config/#{subject}"
+  def update_subject_config(project, subject, new_compatibility)
+    put "#{ENV['HOPSWORKS_API']}/project/#{project.id.to_s}/kafka/config/#{subject}", {compatibility:"#{new_compatibility}"}
+  end
+
+  def get_subject_config(project, subject)
+    get "#{ENV['HOPSWORKS_API']}/project/#{project.id.to_s}/kafka/config/#{subject}"
   end
 end
